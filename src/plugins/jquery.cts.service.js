@@ -104,9 +104,9 @@
         if(object.html === "checkbox") {
           $input = $("<input />", {
             "type" : "checkbox",
-            "checked" : $default,
             "class" : _this.getClass("field-checkbox")
           });
+          $input[0].checked = $default;
         } else if (object.html === "input") {
           $input = $("<input />", {
             "type" : "text",
@@ -183,7 +183,12 @@
       Object.keys(_this.inputs).forEach(function(param) {
         var $input = _this.inputs[param];
         if(typeof $input === "string") {
-          data[param] = $($input).val();
+          var $input = $($input);
+          if($input.attr("type") === "checkbox") {
+            data[param] = $($input).is(":checked");
+          } else {
+            data[param] = $($input).val();
+          }
         } else if (typeof $input === "function") {
           data[param] = $input();
         } else if($input.is("[type='checkbox']")) {
